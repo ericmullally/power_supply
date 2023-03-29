@@ -12,8 +12,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-
-
 /// Addresses in DDRAM. Each Pin occupies 4 bits and are sequentially tied to the next pin
 /// Each segment has 16 bits total. EX: segment one is controlled by PINs 1,2,35,36.
 /// pin1 is the first 4 bits pin 2 is the second 4 bits in 0x00.
@@ -33,36 +31,24 @@
 #define PIN31	0x1F
 #define PIN33	0x21
 #define PIN35	0x23
-
+#define DECIMAL 0x80
 
 struct SEGMENT{
 	char firstPinAddress;
 	char secondPinAddress;
 };
 
-
-//
 const char INTEGERS[9][2] = {
 		{0xE0, 0x70},
 		{0x00, 0x60},
-		{0xC4, 0x32}
+		{0xC4, 0x32},
+		{0x84, 0x42},
+		{0x24, 0x62},
+		{0x94, 0x52},
+		{0xE4, 0x52},
+		{0x00, 0x70},
+		{0xE4, 0x72},
+		{0xA4, 0x72}
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif /* VIM_878_H_ */

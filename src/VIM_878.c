@@ -15,8 +15,6 @@ struct SEGMENT segment6;
 struct SEGMENT segment7;
 struct SEGMENT segment8;
 
-
-
 void load_segments(void){
 
 	segment1.firstPinAddress = PIN1;
@@ -45,7 +43,5 @@ void load_segments(void){
 
 }
 
-void load_integers(void){
 
-}
 

@@ -328,12 +328,8 @@
       ""
     ],
     [
-      "dda7952a-6652-4e1c-bc88-abda2479a8df",
-      "LCD"
-    ],
-    [
       "a37735d2-6f3b-4789-9805-d73b564f1ff1",
-      "VDD"
+      "Main_Supply"
     ]
   ],
   "text_variables": {}

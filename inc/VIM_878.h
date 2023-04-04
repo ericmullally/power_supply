@@ -11,27 +11,45 @@
 #include <stm32f401xc.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <systick.h>
+#include <I2C.h>
 
 /// Addresses in DDRAM. Each Pin occupies 4 bits and are sequentially tied to the next pin
 /// Each segment has 16 bits total. EX: segment one is controlled by PINs 1,2,35,36.
 /// pin1 is the first 4 bits pin 2 is the second 4 bits in 0x00.
-#define PIN1 	0x00
-#define PIN3 	0x03
-#define PIN5 	0x05
-#define PIN7 	0x07
-#define PIN9 	0x09
-#define PIN11 	0x0B
-#define PIN13 	0x0D
-#define PIN15 	0x0F
-#define PIN21	0x10
-#define PIN23	0x14
-#define PIN25	0x19
-#define PIN27	0x1B
-#define PIN29	0x1D
-#define PIN31	0x1F
-#define PIN33	0x21
-#define PIN35	0x23
-#define DECIMAL 0x80
+#define PIN1 				0x00
+#define PIN3 				0x03
+#define PIN5 				0x05
+#define PIN7 				0x07
+#define PIN9 				0x09
+#define PIN11 				0x0B
+#define PIN13 				0x0D
+#define PIN15 				0x0F
+#define PIN21				0x10
+#define PIN23				0x14
+#define PIN25				0x19
+#define PIN27				0x1B
+#define PIN29				0x1D
+#define PIN31				0x1F
+#define PIN33				0x21
+#define PIN35				0x23
+#define DECIMAL 			0x80
+
+
+
+#define ICSET				0x6A
+#define DISPLAY_CONTROL 	0x22
+#define BINK_CTRL			0x70
+#define ALL_PL_CTRL 		0x7C
+#define MODE_SET 			0x48
+
+#define SLAVE_ADDRESS_BSE   0x37
+#define COMMAND				0x80
+#define DATA				~COMMAND
+
+#define DISPLAY_OFF 		(MODE_SET &= ~(0x08))
+#define DISPLAY_ON		 	 MODE_SET
+
 
 struct SEGMENT{
 	char firstPinAddress;
@@ -50,5 +68,10 @@ const char INTEGERS[9][2] = {
 		{0xE4, 0x72},
 		{0xA4, 0x72}
 };
+
+
+
+void lcd_init(void);
+void lcd_write(int whole, int tenths, int hundredths);
 
 #endif /* VIM_878_H_ */

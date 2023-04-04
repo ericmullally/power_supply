@@ -43,5 +43,69 @@ void load_segments(void){
 
 }
 
+void lcd_init(void){
 
+	load_segments();
+
+	I2C1->CR1 |= I2C_STOP_FLAG;
+
+	char commands[21] = {
+			(DISPLAY_OFF |= COMMAND),
+			(segment1.firstPinAddress),
+
+			(integers[8][0]), // top segment 1
+			(integers[8][0]), // top segment 2
+			(integers[8][0]), // top segment 3
+			(integers[8][0]), // top segment 4
+			(integers[8][0]), // top segment 5
+			(integers[8][0]), // top segment 6
+			(integers[8][0]), // top segment 7
+			(integers[8][0]), // top segment 8
+
+			(integers[8][1]), // BTM segment 8
+			(integers[8][1]), // BTM segment 7
+			(integers[8][1]), // BTM segment 6
+			(integers[8][1]), // BTM segment 5
+			(integers[8][1]), // BTM segment 4
+			(integers[8][1]), // BTM segment 3
+			(integers[8][1]), // BTM segment 2
+			(integers[8][1]), // BTM segment 1
+	};
+	Delay(1);
+	i2c_burst_write(SLAVE_ADDRESS_BSE, (ICSET |= COMMAND), sizeof(commands), commands);
+}
+
+void lcd_write(int whole, int tenths, int hundredths){
+
+	I2C1->CR1 |= I2C_STOP_FLAG;
+
+	char commands[21] = {
+			(DISPLAY_CONTROL |= COMMAND),
+			(BINK_CTRL |= COMMAND),
+			(ALL_PL_CTRL |= COMMAND),
+			(DISPLAY_ON |= COMMAND),
+			(segment1.firstPinAddress),
+
+			(0x00), // top segment 1
+			(0x00), // top segment 2
+			(0x00), // top segment 3
+			(0x00), // top segment 4
+			(integers[whole][0] |= DECIMAL), // top segment 5
+			(integers[tenths][0]), 			 // top segment 6
+			(integers[hundredths][0]), 		 // top segment 7
+			(integers[8][0]), 				 // top segment 8
+
+			(integers[8][1]), 			// BTM segment 8
+			(integers[hundredths][1]),	// BTM segment 7
+			(integers[tenths][1]), 		// BTM segment 6
+			(integers[whole][1]), 		// BTM segment 5
+			(0x00), // BTM segment 4
+			(0x00), // BTM segment 3
+			(0x00), // BTM segment 2
+			(0x00), // BTM segment 1
+	};
+	Delay(1);
+	i2c_burst_write(SLAVE_ADDRESS_BSE, (ICSET |= COMMAND), sizeof(commands), commands);
+
+}
 

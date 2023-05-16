@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP RB168VWM-30TR
+D 30V, 1A, Single, PMDE, Ultra low I<sub>R</sub> SBD
+K
+F https://fscdn.rohm.com/en/products/databook/datasheet/discrete/diode/schottky_barrier/rb168vwm-30tr-e.pdf
+$ENDCMP
+#
+#End Doc Library

@@ -6,6 +6,17 @@
  */
 #include <VIM_878.h>
 
+
+typedef struct{
+	volatile char firstCommands[3];
+	volatile char secondCommands[3];
+}numberDisCmnds;
+
+
+
+numberDisCmnds buildDisplayComand(int segment, char topVal, char btmVal );
+int hash(char letter);
+
 struct SEGMENT segment1;
 struct SEGMENT segment2;
 struct SEGMENT segment3;
@@ -15,30 +26,47 @@ struct SEGMENT segment6;
 struct SEGMENT segment7;
 struct SEGMENT segment8;
 
+
+const char INTEGERS[10][2] = {
+		{0xE0, 0x70},
+		{0x00, 0x60},
+		{0xC4, 0x32},
+		{0x84, 0x72},
+		{0x24, 0x62},
+		{0x94, 0x52},
+		{0xE4, 0x52},
+		{0x00, 0x70},
+		{0xE4, 0x72},
+		{0xA4, 0x72}
+};
+
+char alphabet[26];
+
+
 void load_segments(void){
 
-	segment1.firstPinAddress = PIN1;
+	segment1.firstPinAddress = PIN0;
 	segment1.secondPinAddress = PIN35;
 
-	segment2.firstPinAddress = PIN3;
+	segment2.firstPinAddress = PIN2;
 	segment2.secondPinAddress = PIN33;
 
-	segment3.firstPinAddress = PIN5;
+	segment3.firstPinAddress = PIN4;
 	segment3.secondPinAddress = PIN31;
 
-	segment4.firstPinAddress = PIN7;
+	segment4.firstPinAddress = PIN6;
 	segment4.secondPinAddress = PIN29;
 
-	segment5.firstPinAddress = PIN9;
+	segment5.firstPinAddress = PIN8;
 	segment5.secondPinAddress = PIN27;
 
-	segment6.firstPinAddress = PIN11;
+	segment6.firstPinAddress = PIN10;
 	segment6.secondPinAddress = PIN25;
 
-	segment7.firstPinAddress = PIN13;
+	segment7.firstPinAddress = PIN12;
 	segment7.secondPinAddress = PIN23;
 
-	segment8.firstPinAddress = PIN15;
+	segment8.firstPinAddress = PIN14;
 	segment8.secondPinAddress = PIN21;
 
 }
@@ -47,65 +75,172 @@ void lcd_init(void){
 
 	load_segments();
 
-	I2C1->CR1 |= I2C_STOP_FLAG;
-
-	char commands[21] = {
-			(DISPLAY_OFF |= COMMAND),
-			(segment1.firstPinAddress),
-
-			(integers[8][0]), // top segment 1
-			(integers[8][0]), // top segment 2
-			(integers[8][0]), // top segment 3
-			(integers[8][0]), // top segment 4
-			(integers[8][0]), // top segment 5
-			(integers[8][0]), // top segment 6
-			(integers[8][0]), // top segment 7
-			(integers[8][0]), // top segment 8
-
-			(integers[8][1]), // BTM segment 8
-			(integers[8][1]), // BTM segment 7
-			(integers[8][1]), // BTM segment 6
-			(integers[8][1]), // BTM segment 5
-			(integers[8][1]), // BTM segment 4
-			(integers[8][1]), // BTM segment 3
-			(integers[8][1]), // BTM segment 2
-			(integers[8][1]), // BTM segment 1
+	volatile char commands[5] = {
+			(DISPLAY_OFF | COMMAND),
+			(DISPLAY_CONTROL | COMMAND),
+			(BINK_CTRL | COMMAND),
+			(ALL_PL_CTRL | COMMAND),
+			(DISPLAY_ON | COMMAND)
 	};
+
 	Delay(1);
-	i2c_burst_write(SLAVE_ADDRESS_BSE, (ICSET |= COMMAND), sizeof(commands), commands);
+	i2c_burst_write(SLAVE_ADDRESS_BSE, (ICSET | COMMAND), sizeof(commands), commands);
+	Delay(1);
+	clearDisplay();
+	hash('a');
+
 }
 
-void lcd_write(int whole, int tenths, int hundredths){
-
-	I2C1->CR1 |= I2C_STOP_FLAG;
-
-	char commands[21] = {
-			(DISPLAY_CONTROL |= COMMAND),
-			(BINK_CTRL |= COMMAND),
-			(ALL_PL_CTRL |= COMMAND),
-			(DISPLAY_ON |= COMMAND),
+/*
+ * @brief Clear the LCD
+ *
+ * Clears all segments of the display.
+ * */
+void clearDisplay(){
+	volatile char commands[18] = {
+			(DISPLAY_ON | COMMAND),
 			(segment1.firstPinAddress),
 
-			(0x00), // top segment 1
-			(0x00), // top segment 2
-			(0x00), // top segment 3
-			(0x00), // top segment 4
-			(integers[whole][0] |= DECIMAL), // top segment 5
-			(integers[tenths][0]), 			 // top segment 6
-			(integers[hundredths][0]), 		 // top segment 7
-			(integers[8][0]), 				 // top segment 8
-
-			(integers[8][1]), 			// BTM segment 8
-			(integers[hundredths][1]),	// BTM segment 7
-			(integers[tenths][1]), 		// BTM segment 6
-			(integers[whole][1]), 		// BTM segment 5
-			(0x00), // BTM segment 4
-			(0x00), // BTM segment 3
-			(0x00), // BTM segment 2
-			(0x00), // BTM segment 1
+			(0x00), //1,2
+			(0x00), //3,4
+			(0x00),	//5,6
+			(0x00), //7,8
+			(0x00),	//9,10
+			(0x00),	//11,12
+			(0x00),	//13,14
+			(0x00),	//15,16
+			(0x00), //21,22
+			(0x00),	//23,24
+			(0x00), //25,26
+			(0x00), //27,28
+			(0x00), //29,30
+			(0x00), //31,32
+			(0x00), //33,34
+			(0x00), //35,36
 	};
 	Delay(1);
-	i2c_burst_write(SLAVE_ADDRESS_BSE, (ICSET |= COMMAND), sizeof(commands), commands);
+	i2c_burst_write(SLAVE_ADDRESS_BSE, (ICSET | COMMAND), sizeof(commands), commands);
+}
+
+/*@brief Builds the needed commands to display a number.
+ *
+ *
+ * Finds the addres of the requested segment and bundles the into two seperate arrays
+ * stored in the numberDisCmnds struct. Then returns that package.
+ *
+ * @param int segment, char topVal, char btmVal
+ *
+ * @return numberDisCmnds
+ * */
+numberDisCmnds buildDisplayComand(int segment, char topVal, char btmVal ){
+
+	numberDisCmnds computed;
+	computed.firstCommands[0]=(DISPLAY_ON | COMMAND);
+	computed.secondCommands[0]=(DISPLAY_ON | COMMAND);
+
+	switch(segment){
+	case 1:
+		computed.firstCommands[1] = segment1.firstPinAddress;
+		computed.secondCommands[1] = segment1.secondPinAddress;
+		break;
+	case 2:
+		computed.firstCommands[1] = segment2.firstPinAddress;
+		computed.secondCommands[1] = segment2.secondPinAddress;
+		break;
+	case 3:
+		computed.firstCommands[1] = segment3.firstPinAddress;
+		computed.secondCommands[1] = segment3.secondPinAddress;
+		break;
+	case 4:
+		computed.firstCommands[1] = segment4.firstPinAddress;
+		computed.secondCommands[1] = segment4.secondPinAddress;
+		break;
+	case 5:
+		computed.firstCommands[1] = segment5.firstPinAddress;
+		computed.secondCommands[1] = segment5.secondPinAddress;
+		break;
+	case 6:
+		computed.firstCommands[1] = segment6.firstPinAddress;
+		computed.secondCommands[1] = segment6.secondPinAddress;
+		break;
+	case 7:
+		computed.firstCommands[1] = segment7.firstPinAddress;
+		computed.secondCommands[1] = segment7.secondPinAddress;
+		break;
+	case 8:
+		computed.firstCommands[1] = segment8.firstPinAddress;
+		computed.secondCommands[1] = segment8.secondPinAddress;
+		break;
+	default:
+		break;
+	}
+
+	computed.firstCommands[2] = topVal;
+	computed.secondCommands[2] = btmVal;
+
+	return computed;
+}
+
+/*
+ * @brief  Writes a single number to a specific segment.
+ *
+ *
+ *
+ * Takes in a segment to write to and the number to write.
+ * then looks the code for the number in the lookup table.
+ * Feeds those codes into the buildDisplay function to build out the I2C commands.
+ * Then sends the commands to the LCD.
+ *
+ * @param int Segment number, int number to be displayed.
+ * */
+void display_Write(int segment, int num, int decimal){
+	numberDisCmnds commands_all;
+	char val_T = INTEGERS[num][0];
+	char val_B = INTEGERS[num][1];
+	commands_all = buildDisplayComand(segment, val_T, val_B);
+
+	if(decimal){
+		commands_all.secondCommands[2] |= DECIMAL;
+	}
+
+	i2c_burst_write(SLAVE_ADDRESS_BSE, (ICSET | COMMAND), 3, commands_all.firstCommands);
+	Delay(1);
+	i2c_burst_write(SLAVE_ADDRESS_BSE, (ICSET | COMMAND), 3, commands_all.secondCommands);
+	Delay(1);
+}
+
+
+void burst_write(int startSeg, int length, int * nums){
+	clearDisplay();
+	Delay(1);
+
+	int segment = startSeg;
+	for(int i = 0; i < length; i++){
+		if(segment == 6){
+			display_Write(segment, *nums++, 1);
+		}else{
+			display_Write(segment, *nums++, 0);
+		}
+
+		segment ++;
+	}
 
 }
+
+
+int hash(char letter){
+	int key = letter % 26;
+	return key;
+}
+
+
+
+
+
+
+
+
+
+
+
 

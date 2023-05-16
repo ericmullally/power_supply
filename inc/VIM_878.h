@@ -8,7 +8,7 @@
 #ifndef VIM_878_H_
 #define VIM_878_H_
 
-#include <stm32f401xc.h>
+#include <stm32f4xx.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <systick.h>
@@ -17,37 +17,39 @@
 /// Addresses in DDRAM. Each Pin occupies 4 bits and are sequentially tied to the next pin
 /// Each segment has 16 bits total. EX: segment one is controlled by PINs 1,2,35,36.
 /// pin1 is the first 4 bits pin 2 is the second 4 bits in 0x00.
-#define PIN1 				0x00
-#define PIN3 				0x03
-#define PIN5 				0x05
-#define PIN7 				0x07
-#define PIN9 				0x09
-#define PIN11 				0x0B
-#define PIN13 				0x0D
-#define PIN15 				0x0F
+#define PIN0 				0x00
+#define PIN2 				0x02
+#define PIN4 				0x04
+#define PIN6 				0x06
+#define PIN8 				0x08
+#define PIN10 				0x0A
+#define PIN12 				0x0C
+#define PIN14 				0x0E
+
 #define PIN21				0x10
-#define PIN23				0x14
-#define PIN25				0x19
-#define PIN27				0x1B
-#define PIN29				0x1D
-#define PIN31				0x1F
-#define PIN33				0x21
-#define PIN35				0x23
+#define PIN23				0x12
+#define PIN25				0x14
+#define PIN27				0x16
+#define PIN29				0x18
+#define PIN31				0x1A
+#define PIN33				0x1C
+#define PIN35				0x1E
+
 #define DECIMAL 			0x80
 
 
 
-#define ICSET				0x6A
+#define ICSET				0x6A // 0110 1010
 #define DISPLAY_CONTROL 	0x22
 #define BINK_CTRL			0x70
 #define ALL_PL_CTRL 		0x7C
 #define MODE_SET 			0x48
 
-#define SLAVE_ADDRESS_BSE   0x37
+#define SLAVE_ADDRESS_BSE   0x3E //0011 1110
 #define COMMAND				0x80
 #define DATA				~COMMAND
 
-#define DISPLAY_OFF 		(MODE_SET &= ~(0x08))
+#define DISPLAY_OFF 		(MODE_SET &~(0x08))
 #define DISPLAY_ON		 	 MODE_SET
 
 
@@ -56,22 +58,11 @@ struct SEGMENT{
 	char secondPinAddress;
 };
 
-const char INTEGERS[9][2] = {
-		{0xE0, 0x70},
-		{0x00, 0x60},
-		{0xC4, 0x32},
-		{0x84, 0x42},
-		{0x24, 0x62},
-		{0x94, 0x52},
-		{0xE4, 0x52},
-		{0x00, 0x70},
-		{0xE4, 0x72},
-		{0xA4, 0x72}
-};
 
 
 
 void lcd_init(void);
-void lcd_write(int whole, int tenths, int hundredths);
-
+void display_Write(int segment, int num, int decimal);
+void burst_write(int startSeg, int length, int * nums);
+void clearDisplay();
 #endif /* VIM_878_H_ */

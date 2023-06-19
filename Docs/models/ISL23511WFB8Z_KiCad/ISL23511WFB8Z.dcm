@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP ISL23511WFB8Z
+D DCPs Low Noise, Low Power, 32 Taps, Push Button Controlled Potentiometer
+K
+F https://www.renesas.com/en-us/www/doc/datasheet/isl23511.pdf
+$ENDCMP
+#
+#End Doc Library

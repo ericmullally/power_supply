@@ -1,39 +1,10 @@
 {
   "board": {
     "active_layer": 0,
-    "active_layer_preset": "All Layers",
+    "active_layer_preset": "",
     "auto_track_width": true,
     "hidden_netclasses": [],
-    "hidden_nets": [
-      "Raw",
-      "GND",
-      "Net-(IC2-VAUX)",
-      "/V_Cap",
-      "/Nrst",
-      "/Crystal_in",
-      "/Crystal_out",
-      "Net-(U3-BYP)",
-      "/Main_Supply/Pot_up",
-      "board_out",
-      "/Main_Supply/Pot_dwn",
-      "VOUT",
-      "Net-(D3-K)",
-      "Main_Supply",
-      "FB",
-      "Net-(IC2-EN)",
-      "/Main_Supply/PG",
-      "/Main_Supply/switch_L2",
-      "/Main_Supply/switch_L1",
-      "SWCLCK",
-      "SWDIO",
-      "SWO",
-      "SDA",
-      "SCL",
-      "ADC1",
-      "Net-(R2-Pad1)",
-      "Net-(R3-Pad1)",
-      "/Board_PWR/usb_out"
-    ],
+    "hidden_nets": [],
     "high_contrast_mode": 0,
     "net_color_mode": 1,
     "opacity": {
@@ -97,7 +68,7 @@
     "zone_display_mode": 0
   },
   "meta": {
-    "filename": "power_supply.kicad_prl",
+    "filename": "Power_Supply.kicad_prl",
     "version": 3
   },
   "project": {

@@ -1,9 +1,0 @@
-EESchema-DOCLIB  Version 2.0
-#
-$CMP AP7370-33WW-7
-D LDO Voltage Regulators LDO CMOS LowCurr SOT25 T&R 3K
-K
-F https://componentsearchengine.com/Datasheets/1/AP7370-33WW-7.pdf
-$ENDCMP
-#
-#End Doc Library

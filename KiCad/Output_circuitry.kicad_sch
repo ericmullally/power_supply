@@ -684,6 +684,19 @@
     (uuid f7237af0-b336-4768-8fbb-9b70deb1fe65)
   )
 
+  (text_box "Digital POT ISL23511WFB8Z has 32 taps and a total resistance of 10k ohms. Giving each step 312.5 ohms of resistance.\n\nThe maximum Output voltage for TPS63070RNMR is 9V.\n\nThe VOUT program formula for TPS63070RNMR is VOUT = .8V((R1/R2) +1).\n\nThe formula for R1 is: R1 = 312.5 * n  Where n is the number of steps performed.\n\nThe formula for R2 is: R2 = (32 - n) * 312.5 Where n is the number of steps performed."
+    (at 14.097 149.479 0) (size 148.209 45.974)
+    (stroke (width 0) (type default))
+    (fill (type none))
+    (effects (font (size 1.27 1.27)) (justify left top))
+    (uuid ea28335c-bf68-432e-a095-48bc70a878f9)
+  )
+
+  (text "NOTES" (at 14.224 148.844 0)
+    (effects (font (size 5 5)) (justify left bottom))
+    (uuid fe861c53-c717-4c9d-a2e9-5a8267c0f3ab)
+  )
+
   (label "PG" (at 117.348 79.756 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 269619e3-3f91-4d14-bafd-9bb78c8de20a)

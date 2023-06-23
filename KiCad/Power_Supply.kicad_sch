@@ -1588,7 +1588,7 @@
   )
 
   (text_box "ADC Split voltage delevers 20% of the actual voltage. Because ADC max voltage is 3.3V and max input voltage is 16V.\n\nEnable internal pull up for all POT gpio.\n\nBoot-0 resistors are solder bridges. Only solder one or the other depending on desired boot mode."
-    (at 245.872 134.112 0) (size 38.1 30.226)
+    (at 179.705 134.112 0) (size 104.267 30.226)
     (stroke (width 0) (type default))
     (fill (type none))
     (effects (font (size 1.27 1.27)) (justify left top))

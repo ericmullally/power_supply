@@ -16,21 +16,26 @@
  ******************************************************************************
  */
 
+#include <stdio.h>
+
 #include <stdint.h>
 #include <I2C.h>
 #include <VIM_878.h>
 #include <Usart_Setup.h>
+#include <Letter_hash.h>
 
 
-int data[3] = {3,3,3};
+int data[4] = {3,3,3,0};
 
 int main(void)
 {
 	/* Init FPU*/
 	SCB->CPACR |= ((3UL << 20)|(3UL << 22));
+
 	i2c1_init();
 	lcd_init();
-	burst_write(6,3, (int*)data);
+	letter_hash_init();
+	burst_write(5,4, data);
 
 	while(1){
 

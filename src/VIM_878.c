@@ -195,8 +195,19 @@ numberDisCmnds buildDisplayComand(int segment, char topVal, char btmVal ){
  * */
 void display_Write(int segment, int num, int decimal){
 	numberDisCmnds commands_all;
-	char val_T = INTEGERS[num][0];
-	char val_B = INTEGERS[num][1];
+
+	char val_T;
+	char val_B;
+	if(segment == 8){
+		struct Letter * values = get_letter("V");
+		val_T = values->top;
+		val_B = values->bottom;
+	}else{
+		val_T = INTEGERS[num][0];
+		val_B = INTEGERS[num][1];
+	}
+
+
 	commands_all = buildDisplayComand(segment, val_T, val_B);
 
 	if(decimal){
@@ -216,7 +227,7 @@ void burst_write(int startSeg, int length, int * nums){
 
 	int segment = startSeg;
 	for(int i = 0; i < length; i++){
-		if(segment == 6){
+		if(segment == 5){
 			display_Write(segment, *nums++, 1);
 		}else{
 			display_Write(segment, *nums++, 0);
@@ -227,11 +238,6 @@ void burst_write(int startSeg, int length, int * nums){
 
 }
 
-
-int hash(char letter){
-	int key = letter % 26;
-	return key;
-}
 
 
 

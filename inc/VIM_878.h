@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <systick.h>
 #include <I2C.h>
+#include <Letter_hash.h>
 
 /// Addresses in DDRAM. Each Pin occupies 4 bits and are sequentially tied to the next pin
 /// Each segment has 16 bits total. EX: segment one is controlled by PINs 1,2,35,36.

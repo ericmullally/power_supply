@@ -33,7 +33,7 @@ const char INTEGERS[10][2] = {
 		{0xC4, 0x32},
 		{0x84, 0x72},
 		{0x24, 0x62},
-		{0x94, 0x52},
+		{0xA4, 0x52},
 		{0xE4, 0x52},
 		{0x00, 0x70},
 		{0xE4, 0x72},
@@ -71,11 +71,12 @@ void load_segments(void){
 
 }
 
-void lcd_init(void){
+void lcd_init(I2C_HandleTypeDef hI2Cx){
 
 	load_segments();
-
-	volatile char commands[5] = {
+	letter_hash_init();
+	volatile char commands[6] = {
+			(ICSET | COMMAND),
 			(DISPLAY_OFF | COMMAND),
 			(DISPLAY_CONTROL | COMMAND),
 			(BINK_CTRL | COMMAND),
@@ -83,11 +84,11 @@ void lcd_init(void){
 			(DISPLAY_ON | COMMAND)
 	};
 
-	Delay(1);
-	i2c_burst_write(SLAVE_ADDRESS_BSE, (ICSET | COMMAND), sizeof(commands), commands);
-	Delay(1);
-	clearDisplay();
-	hash('a');
+	HAL_Delay(1);
+	HAL_I2C_Master_Transmit(&hI2Cx, (SLAVE_ADDRESS_BSE << 1), (uint8_t *)commands, sizeof(commands), 100000);
+	HAL_Delay(1);
+	clearDisplay(hI2Cx);
+
 
 }
 
@@ -96,11 +97,10 @@ void lcd_init(void){
  *
  * Clears all segments of the display.
  * */
-void clearDisplay(){
+void clearDisplay(I2C_HandleTypeDef hI2Cx){
 	volatile char commands[18] = {
 			(DISPLAY_ON | COMMAND),
 			(segment1.firstPinAddress),
-
 			(0x00), //1,2
 			(0x00), //3,4
 			(0x00),	//5,6
@@ -118,8 +118,8 @@ void clearDisplay(){
 			(0x00), //33,34
 			(0x00), //35,36
 	};
-	Delay(1);
-	i2c_burst_write(SLAVE_ADDRESS_BSE, (ICSET | COMMAND), sizeof(commands), commands);
+	HAL_Delay(1);
+	HAL_I2C_Master_Transmit(&hI2Cx, (SLAVE_ADDRESS_BSE << 1), (uint8_t *)commands, sizeof(commands), 100000);
 }
 
 /*@brief Builds the needed commands to display a number.
@@ -135,8 +135,8 @@ void clearDisplay(){
 numberDisCmnds buildDisplayComand(int segment, char topVal, char btmVal ){
 
 	numberDisCmnds computed;
-	computed.firstCommands[0]=(DISPLAY_ON | COMMAND);
-	computed.secondCommands[0]=(DISPLAY_ON | COMMAND);
+	computed.firstCommands[0]= (DISPLAY_ON | COMMAND);
+	computed.secondCommands[0] = (DISPLAY_ON | COMMAND);
 
 	switch(segment){
 	case 1:
@@ -193,7 +193,7 @@ numberDisCmnds buildDisplayComand(int segment, char topVal, char btmVal ){
  *
  * @param int Segment number, int number to be displayed.
  * */
-void display_Write(int segment, int num, int decimal){
+void display_Write(I2C_HandleTypeDef hI2Cx, int segment, int num, int decimal){
 	numberDisCmnds commands_all;
 
 	char val_T;
@@ -202,6 +202,9 @@ void display_Write(int segment, int num, int decimal){
 		struct Letter * values = get_letter("V");
 		val_T = values->top;
 		val_B = values->bottom;
+	}else if(segment == 7){
+		val_T = 0x00;
+		val_B = 0x00;
 	}else{
 		val_T = INTEGERS[num][0];
 		val_B = INTEGERS[num][1];
@@ -214,23 +217,23 @@ void display_Write(int segment, int num, int decimal){
 		commands_all.secondCommands[2] |= DECIMAL;
 	}
 
-	i2c_burst_write(SLAVE_ADDRESS_BSE, (ICSET | COMMAND), 3, commands_all.firstCommands);
-	Delay(1);
-	i2c_burst_write(SLAVE_ADDRESS_BSE, (ICSET | COMMAND), 3, commands_all.secondCommands);
-	Delay(1);
+	HAL_I2C_Master_Transmit(&hI2Cx, (SLAVE_ADDRESS_BSE << 1), (uint8_t *)commands_all.firstCommands, 3, 100000);
+	HAL_Delay(1);
+	HAL_I2C_Master_Transmit(&hI2Cx, (SLAVE_ADDRESS_BSE << 1), (uint8_t *)commands_all.secondCommands, 3, 100000);
+	HAL_Delay(1);
 }
 
 
-void burst_write(int startSeg, int length, int * nums){
-	clearDisplay();
-	Delay(1);
+void burst_write(I2C_HandleTypeDef hI2Cx, int startSeg, int length, int * nums){
+	clearDisplay(hI2Cx);
+	HAL_Delay(1);
 
 	int segment = startSeg;
 	for(int i = 0; i < length; i++){
-		if(segment == 5){
-			display_Write(segment, *nums++, 1);
+		if(segment == 4){
+			display_Write(hI2Cx, segment, *nums++, 1);
 		}else{
-			display_Write(segment, *nums++, 0);
+			display_Write(hI2Cx, segment, *nums++, 0);
 		}
 
 		segment ++;

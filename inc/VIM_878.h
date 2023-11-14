@@ -11,9 +11,11 @@
 #include <stm32f4xx.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <systick.h>
-#include <I2C.h>
-#include <Letter_hash.h>
+#include "stm32f4xx_hal.h"
+#include "Letter_hash.h"
+//#include <systick.h>
+//#include <I2C.h>
+//#include <Letter_hash.h>
 
 /// Addresses in DDRAM. Each Pin occupies 4 bits and are sequentially tied to the next pin
 /// Each segment has 16 bits total. EX: segment one is controlled by PINs 1,2,35,36.
@@ -62,8 +64,8 @@ struct SEGMENT{
 
 
 
-void lcd_init(void);
-void display_Write(int segment, int num, int decimal);
-void burst_write(int startSeg, int length, int * nums);
-void clearDisplay();
+void lcd_init(I2C_HandleTypeDef hI2Cx);
+void display_Write(I2C_HandleTypeDef hI2Cx, int segment, int num, int decimal);
+void burst_write(I2C_HandleTypeDef hI2Cx, int startSeg, int length, int * nums);
+void clearDisplay(I2C_HandleTypeDef hI2Cx);
 #endif /* VIM_878_H_ */

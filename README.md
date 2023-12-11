@@ -17,3 +17,6 @@ voltages (see Docs->ICs for datasheet).
 ## Documents 
 Attached is the basic code written for the STM32Ide version 1.11 using the HAL library.
 The driver for the LCD display, along with the schematics for the board (for KiCad) and relevant datasheets. 
+
+## License
+This repository is licensed under The MIT License.
